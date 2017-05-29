@@ -7,102 +7,144 @@ import processing.core.PVector;
  * Created by salas on 29/05/2017.
  */
 
-public class Sketch_1 extends PApplet{
-
-
-    int Y_AXIS = 1;
-    int X_AXIS = 2;
-
-    int numeroparticulas, tipoparticulas, colorfondo;
-
-    float Factor;
-
-
-    int opacidad;
-    Storsimple estorninos;
-    float flujo =1;
-    Atractor central, lateral1, lateral2, lateral3,lateral4;
-
-
-
+public class Sketch_1 extends PApplet {
+    Particula particulilla;
 
     public void settings() {
-        size (800,750);
-        smooth(8);
-        frameRate(60);
 
-        numeroparticulas=1000;
-
-        Factor=1;
-
-
-
-
-
-
-
-
-
-
-
-        opacidad=255;
-
-        estorninos=new Storsimple(numeroparticulas,tipoparticulas,0,height,0,width);
-
-
-
-
-        central=new Atractor();
-        lateral1=new Atractor();
-        lateral2=new Atractor();
-        lateral3=new Atractor();
-        lateral4=new Atractor();
-        central.posicion=new PVector(width/2, height/2);
-        lateral1.posicion=new PVector(width/2, height/8);
-        lateral2.posicion=new PVector(width/8, height/2);
-        lateral3.posicion=new PVector(7*(width/8), height/2);
-        lateral4.posicion=new PVector((width/2), 7*(height/8));
+       size(displayWidth, displayHeight);
+        //fullScreen();
     }
 
-
-    public void setup (){
-
-
-
-
+    public void setup() {
+        particulilla = new Particula();
+        particulilla.posicion = new PVector(80, 80);
     }
-
 
     public void draw() {
-
-
         background(0);
 
-        noFill();
-        central.sentido = -1 - flujo;
-        lateral1.sentido = (float) -0.5 * flujo;
-        lateral2.sentido = (float) -0.5 * flujo;
-        lateral3.sentido = (float) -0.5 * flujo;
-        lateral4.sentido = (float) -0.5 * flujo;
-        for (int i = 0; i < 2; i++) {
+        particulilla.mostrar();
 
+    }
 
-            estorninos.aceleradorparticulas(central);
+   class Particula {
 
-            estorninos.aceleradorparticulas(lateral1);
-            estorninos.aceleradorparticulas(lateral2);
-            estorninos.aceleradorparticulas(lateral3);
-            estorninos.aceleradorparticulas(lateral4);
+        int r, g, b, a;
+        PVector posicion, velocidad, aceleracion, gravedad;
+        float limite;
+        float masa;
+        boolean resistencia;
+        float coefroz;
+        float lifespan;
+        boolean eterna;
+        int decay;
+        int limsup, liminf, limizq, limder;
 
-            estorninos.dibujaparticulas();
+        public Particula() {
+            limsup = 0;
+            liminf = height;
+            limizq = 0;
+            limder = width;
+            posicion = new PVector(random(limder - limizq), random(liminf - limsup));
+            velocidad = new PVector(0, 0);
+            aceleracion = new PVector(0, 0);
+            gravedad = new PVector(0, (float) 0.02);
+            limite = 15;
+            masa = random(3, 18);
+            resistencia = false;
+            r = (int) (random(0, 255));
+            g = (int) (random(0, 255));
+            b = (int) (random(0, 255));
+            a = (int) (random(0, 255));
+            lifespan = 255;
+            eterna = false;
+            decay = 2;
+            //masa=30;
+        }
+
+        void acelerar(PVector acelerador) {
+            PVector a = PVector.div(acelerador, masa);
+            aceleracion.add(a);
+        }
+
+        void caer() {
+            velocidad.add(gravedad);
+        }
+
+        void resistencia(float coeficiente) {
+            resistencia = true;
+            coefroz = coeficiente;
+        }
+
+        boolean muerta() {
+            if (lifespan < 0) {
+                return true;
+            } else {
+                return false;
+            }
+
 
         }
 
+        public void actualizar() {
+            if (eterna == false) {
+                lifespan -= decay;
+            }
+            velocidad.add(aceleracion);
+            if (resistencia) {
+                PVector friccion = velocidad.get();
+
+                friccion.normalize();
+                friccion.mult(-1 * coefroz);
+                velocidad.add(friccion);
+            }
+            velocidad.limit(limite);
+            posicion.add(velocidad);
+
+
+            aceleracion.mult(0);
+
+            if (posicion.x > limder) {
+                velocidad.x = velocidad.x * -1;
+                posicion.x = limder;
+            }
+            if (posicion.x < limizq) {
+                velocidad.x = velocidad.x * -1;
+                posicion.x = limizq;
+            }
+            if (posicion.y > liminf) {
+                velocidad.y = velocidad.y * -1;
+                posicion.y = liminf;
+            }
+            if (posicion.y < limsup) {
+                velocidad.y = velocidad.y * -1;
+                posicion.y = limsup;
+            }
+        }
+
+        public void mostrar() {
+            if (eterna == false) {
+                a = (int) (lifespan);
+            }
+            stroke(r, g, b, a);
+            strokeWeight(masa);
+
+            point(posicion.x, posicion.y);
+            strokeWeight(10);
+            stroke(0, 0, 0, 255);
+            point(30, 30);
+
+        }
+
+        public void lanzar() {
+            actualizar();
+            mostrar();
+
+
+        }
 
     }
-
-
-
 }
 
 
