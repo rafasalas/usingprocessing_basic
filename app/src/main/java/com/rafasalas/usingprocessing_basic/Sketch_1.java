@@ -1,5 +1,7 @@
 package com.rafasalas.usingprocessing_basic;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -8,23 +10,64 @@ import processing.core.PVector;
  */
 
 public class Sketch_1 extends PApplet {
-    Particula particulilla;
+    int numeroparticulas, tipoparticulas, colorfondo;
+
+    float Factor=1;
+
+
+    int opacidad;
+    Storsimple estorninos;
+    float flujo =1;
+    Atractor central;
 
     public void settings() {
 
-       size(displayWidth, displayHeight);
+        size(displayWidth, displayHeight);
         //fullScreen();
     }
 
-    public void setup() {
-        particulilla = new Particula();
-        particulilla.posicion = new PVector(80, 80);
+    public void setup (){
+        smooth(8);
+        frameRate(60);
+
+        numeroparticulas=250;
+
+
+
+
+
+
+
+
+
+
+
+
+
+        opacidad=255;
+
+        estorninos=new Storsimple(numeroparticulas,0,height,0,width);
+
+
+
+        central=new Atractor(1);
+
+        central.posicion=new PVector(width/2, height/2);
+
+
     }
 
-    public void draw() {
+
+    public void draw(){
         background(0);
 
-        particulilla.mostrar();
+        noFill();
+        central.sentido=-1-flujo;
+
+
+        estorninos.aceleradorparticulas(central);
+
+        estorninos.dibujaparticulas();
 
     }
 
@@ -145,6 +188,154 @@ public class Sketch_1 extends PApplet {
         }
 
     }
+    class Storsimple {
+
+
+        float magbrowniano;
+        float numeroparticulas, masaparticula;
+        int claseparticula;
+        PVector velocidadinicial;
+        PVector origen;
+        PVector browniano;
+        int limsup, liminf, limizq, limder;
+
+        boolean esbrowniano;
+        //float magbrowniano;
+        ArrayList<Particula> particulas;
+
+
+        Storsimple(float numpart,  int sup, int inf, int izq, int der){
+            limsup=sup;
+            liminf=inf;
+            limizq=izq;
+            limder=der;
+            numeroparticulas=numpart;
+
+            particulas=new ArrayList<Particula>() ;
+
+
+            origen=new PVector(random(width), random(height));
+            //origen=new PVector((width/2)+30, (height/2)+30);
+            esbrowniano=true;
+            magbrowniano=(float).8;
+
+            for(int i=0; i<numeroparticulas; i++){
+                //velocidadinicial=new PVector (0,50+random(-10,10));
+                velocidadinicial=new PVector (random (width),random(height));
+                //velocidadinicial=new PVector (random (-15,15),random(-15,15));
+                //velocidadinicial=new PVector (10+random(-3,3),10+random(-3,3));
+                masaparticula=random (3,10);
+
+                particulas.add(new Particula());
+
+                particulas.get(i).eterna=true;
+                particulas.get(i).liminf=inf;
+                particulas.get(i).limsup=sup;
+                particulas.get(i).limizq=izq;
+                particulas.get(i).limder=der;
+            }
+
+
+        }
+
+        //fin constructor Storsimple
+
+
+        void aceleradorparticulas(Atractor a){
+            for (int i = 0; i < particulas.size(); i++) {
+                Particula p = particulas.get(i);
+                p.acelerar(a.fuerza(p.posicion));
+                if(esbrowniano==true){
+                    browniano=new PVector (0, magbrowniano);
+                    browniano.rotate(p.velocidad.heading());
+                    p.acelerar(browniano);
+                }
+            }
+
+        }
+
+
+
+
+
+
+        void dibujaparticulas(){
+
+            for (int i = 0; i < particulas.size(); i++) {
+                Particula p = particulas.get(i);
+                //noFill();
+                //stroke (p.r,p.g,p.b,55);
+                //if (p.posicion.x>(limder-limizq)/2){factor=5;}else{factor=-5;}
+
+                //bezier(p.posicion.x, p.posicion.y, p.posicion.x+factor*10, p.posicion.y+180, (limder-limizq)/2+factor, (liminf-limsup)/2,(limder-limizq)/2,(liminf-limsup));
+                p.caer();
+                p.lanzar();
+
+
+
+            }
+
+
+        }
+
+
+
+
+    }//fin class Storsimple
+
+    class Atractor {
+        PVector posicion, origen_icono;
+        float sentido;
+        int tipo_atractor;
+        int interaccion;
+
+        Atractor (int clase){
+            posicion=new PVector(random(width), random(height));
+            interaccion=0;
+            sentido=-1;
+            tipo_atractor=clase;
+            origen_icono=new PVector (0,0);
+        }
+        PVector fuerza (PVector posicionobjeto){
+
+            PVector f=posicionobjeto.get();
+            f.sub(posicion);
+
+            float modulo=f.mag();
+            if (modulo <0) {f.mult(-1);}
+            f.normalize();
+            //noria
+
+            //if (modulo<100){f.rotate(HALF_PI);}
+            //noria
+            switch(tipo_atractor) {
+                case 1:
+                    f.mult(modulo/50);
+                    break;
+                case 2:
+                    f.mult(150/modulo);
+                    break;
+                case 3:
+                    f.mult(4);
+                    break;
+                case 4:
+                    f.mult(150/modulo*modulo);
+                    break;
+            }
+            f.mult(sentido);
+            return f;
+        }
+        void visible(){stroke (255,255,255);
+            strokeWeight(1);
+            //if (sentido>0) {fill(0,0,0);} else {fill(255,255,255);}
+            noFill();
+            ellipse (posicion.x, posicion.y, 10, 10);
+
+        }
+
+    }
+
+
 }
 
 
