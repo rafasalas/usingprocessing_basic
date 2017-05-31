@@ -16,9 +16,9 @@ public class Sketch_1 extends PApplet {
 
 
     int opacidad;
-    Storsimple estorninos;
-    float flujo =1;
-    Atractor central;
+    ArrayList<Storsimple> estorninos;
+    public float flujo =1;
+    Atractor central, lateral1, lateral2, lateral3,lateral4;
 
     public void settings() {
 
@@ -27,32 +27,30 @@ public class Sketch_1 extends PApplet {
     }
 
     public void setup (){
-        smooth(8);
+        //smooth(8);
         frameRate(60);
 
-        numeroparticulas=250;
-
-
-
-
-
-
-
-
-
-
-
-
+        numeroparticulas=90;
 
         opacidad=255;
 
-        estorninos=new Storsimple(numeroparticulas,0,height,0,width);
+        estorninos=new ArrayList<Storsimple>() ;
+        for(int i=0; i<2; i++){if (i==0){tipoparticulas=2;}else{tipoparticulas=2;}
+            estorninos.add(new Storsimple(numeroparticulas,0,height,0,width));
+            //estorninos.get(i).colorea(125,255,0,1,0,1, 50,180);
 
-
+        }
 
         central=new Atractor(1);
-
+        lateral1=new Atractor(1);
+        lateral2=new Atractor(1);
+        lateral3=new Atractor(1);
+        lateral4=new Atractor(1);
         central.posicion=new PVector(width/2, height/2);
+        lateral1.posicion=new PVector(width/2, height/8);
+        lateral2.posicion=new PVector(width/8, height/2);
+        lateral3.posicion=new PVector(7*(width/8), height/2);
+        lateral4.posicion=new PVector((width/2), 7*(height/8));
 
 
     }
@@ -63,11 +61,24 @@ public class Sketch_1 extends PApplet {
 
         noFill();
         central.sentido=-1-flujo;
+        lateral1.sentido=(float)-0.5*flujo;
+        lateral2.sentido=(float)-0.5*flujo;
+        lateral3.sentido=(float)-0.5*flujo;
+        lateral4.sentido=(float)-0.5*flujo;
+        for (int i = 0; i < 2; i++) {
+            Storsimple s = estorninos.get(i);
 
+            s.aceleradorparticulas(central);
+            if (i==0){
+                s.aceleradorparticulas(lateral1);
+                s.aceleradorparticulas(lateral2);}
+            else{
+                s.aceleradorparticulas(lateral3);
+                s.aceleradorparticulas(lateral4);
+            }
+            s.dibujaparticulas();
 
-        estorninos.aceleradorparticulas(central);
-
-        estorninos.dibujaparticulas();
+        }
 
     }
 
@@ -93,7 +104,7 @@ public class Sketch_1 extends PApplet {
             velocidad = new PVector(0, 0);
             aceleracion = new PVector(0, 0);
             gravedad = new PVector(0, (float) 0.02);
-            limite = 15;
+            limite = 10;
             masa = random(3, 18);
             resistencia = false;
             r = (int) (random(0, 255));
@@ -174,10 +185,26 @@ public class Sketch_1 extends PApplet {
             strokeWeight(masa);
 
             point(posicion.x, posicion.y);
-            strokeWeight(10);
-            stroke(0, 0, 0, 255);
-            point(30, 30);
+            strokeWeight(1);
 
+            /*float angular;
+            if (eterna == false) {
+                a = (int) (lifespan);
+            }
+            stroke (r,g,b,a);
+            strokeWeight(1);
+            fill(r,g,b,a);
+            //angular=atan2(velocidad.y,velocidad.x);
+            angular=velocidad.heading()+(PI);
+            //angular=constrain (angular,-0.1,0.1);
+
+
+            rectMode (CENTER);
+            pushMatrix();
+            translate(posicion.x, posicion.y);
+            rotate(angular);
+            rect (0, 0, masa,masa);
+            popMatrix();*/
         }
 
         public void lanzar() {
