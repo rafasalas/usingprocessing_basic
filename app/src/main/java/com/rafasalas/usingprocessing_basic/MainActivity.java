@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private Visualizer mVisualizer;
-   public float flujo;
+   public  float flujo=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                     sum=sum+(float)bytes[i];
                 }
                 if (sum<-16383){sum=1;}else{sum=sum/1000;}
-               flujo=sum;
+                //globals.setFlujo(flujo);
             }
 
             @Override
