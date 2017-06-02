@@ -1,5 +1,7 @@
 package com.rafasalas.usingprocessing_basic;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 import processing.core.PApplet;
@@ -19,10 +21,11 @@ public class Sketch_1 extends PApplet {
     ArrayList<Storsimple> estorninos;
     public float flujo =2;
     Atractor central, lateral1, lateral2, lateral3,lateral4;
-
+    Context mContext;
     final globals dataglobal = (globals) getActivity().getApplicationContext();
-    public void settings() {
 
+
+    public void settings() {
         size(displayWidth, displayHeight, P2D);
         //sketchRenderer(P2D);
         //fullScreen();

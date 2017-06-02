@@ -9,14 +9,15 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private Visualizer mVisualizer;
-   public  float flujo=0;
-    final globals dataglobal = (globals) getApplicationContext();
+     public  float flujo=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
         android.app.Fragment fragment = new Sketch_1();
+        init();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         mVisualizer.setEnabled(false);
         // mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
         mVisualizer.setCaptureSize(128);
-
+        final globals dataglobal = (globals) getApplicationContext();
         Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener()
         {
             @Override

@@ -3,6 +3,7 @@
     package="com.rafasalas.usingprocessing_basic">
 
     <application
+        android:name="com.rafasalas.usingprocessing_basic.globals"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
