@@ -17,25 +17,27 @@ public class Sketch_1 extends PApplet {
 
     int opacidad;
     ArrayList<Storsimple> estorninos;
-    public float flujo =1;
+    public float flujo =2;
     Atractor central, lateral1, lateral2, lateral3,lateral4;
 
+    final globals dataglobal = (globals) getActivity().getApplicationContext();
     public void settings() {
 
-        size(displayWidth, displayHeight);
+        size(displayWidth, displayHeight, P2D);
+        //sketchRenderer(P2D);
         //fullScreen();
     }
 
     public void setup (){
         //smooth(8);
-        frameRate(60);
+        //frameRate(60);
 
-        numeroparticulas=90;
+        numeroparticulas=50;
 
         opacidad=255;
 
         estorninos=new ArrayList<Storsimple>() ;
-        for(int i=0; i<2; i++){if (i==0){tipoparticulas=2;}else{tipoparticulas=2;}
+        for(int i=0; i<2; i++){
             estorninos.add(new Storsimple(numeroparticulas,0,height,0,width));
             //estorninos.get(i).colorea(125,255,0,1,0,1, 50,180);
 
@@ -60,6 +62,8 @@ public class Sketch_1 extends PApplet {
         background(0);
 
         noFill();
+        flujo=dataglobal.getFlujo();
+
         central.sentido=-1-flujo;
         lateral1.sentido=(float)-0.5*flujo;
         lateral2.sentido=(float)-0.5*flujo;
@@ -104,7 +108,7 @@ public class Sketch_1 extends PApplet {
             velocidad = new PVector(0, 0);
             aceleracion = new PVector(0, 0);
             gravedad = new PVector(0, (float) 0.02);
-            limite = 10;
+            limite = 20;
             masa = random(3, 18);
             resistencia = false;
             r = (int) (random(0, 255));
@@ -244,7 +248,7 @@ public class Sketch_1 extends PApplet {
             origen=new PVector(random(width), random(height));
             //origen=new PVector((width/2)+30, (height/2)+30);
             esbrowniano=true;
-            magbrowniano=(float).8;
+            magbrowniano=(float)1;
 
             for(int i=0; i<numeroparticulas; i++){
                 //velocidadinicial=new PVector (0,50+random(-10,10));
